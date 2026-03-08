@@ -76,9 +76,7 @@ class _SliderViewState extends State<SliderView> {
         child: Theme(
           data: Theme.of(context).copyWith(
               iconTheme: IconThemeData(
-            color: context.read<ThemeProvider>().isLightMode
-                ? Colors.black
-                : Colors.white,
+            color: context.read<ThemeProvider>().currentColorScheme?.onSurface
           )),
           child: Column(
             children: [
@@ -229,9 +227,7 @@ class _SliderMenuItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: index == currentIndex
-            ? context.read<ThemeProvider>().isLightMode
-                ? const Color.fromARGB(255, 255, 209, 209)
-                : Theme.of(context).colorScheme.surface
+            ? context.read<ThemeProvider>().currentColorScheme?.surface
             : Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(20),
       ),
@@ -241,9 +237,7 @@ class _SliderMenuItem extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: context.read<ThemeProvider>().isLightMode
-                    ? Colors.black
-                    : Colors.white,
+                color: context.read<ThemeProvider>().currentColorScheme?.surface,
               ),
             ),
             if (isBeta == true)

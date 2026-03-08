@@ -1,89 +1,42 @@
 import 'package:runshaw/utils/theme/dark.dart';
 import 'package:runshaw/utils/theme/light.dart';
+import 'package:runshaw/utils/theme/amoled.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider with ChangeNotifier {
-  late ThemeMode _themeMode = ThemeMode.system;
-  late ColorScheme _darkScheme = darkColourScheme;
-  late ColorScheme _lightScheme = lightColourScheme;
-  final ColorScheme _amoledScheme = amoledColourScheme;
   late bool amoledEnabled = false;
+  late String currentScheme = 'light';
 
-  ThemeMode get themeMode => _themeMode;
-  bool get isDarkMode =>
-      _themeMode == ThemeMode.dark ||
-      (_themeMode == ThemeMode.system &&
-          WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-              Brightness.dark);
-  bool get isLightMode =>
-      _themeMode == ThemeMode.light ||
-      (_themeMode == ThemeMode.system &&
-          WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-              Brightness.light);
+  final themes = {['light']: lightColourScheme, ['dark']: darkColourScheme, ['amoled']: amoledColourScheme};
+  final lightThemes = ['light'];
+  final darkThemes = ['dark', 'amoled'];
+
+  late ColorScheme? currentColorScheme;
 
   Future<void> initTheme() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? theme = prefs.getString('theme');
-    final bool? isAmoled = prefs.getBool("isAmoled");
-
-    if (isAmoled == true) {
-      amoledEnabled = true;
-    } else {
-      amoledEnabled = false;
-    }
+    String? theme = prefs.getString('theme');
 
     if (theme == null) {
-      _themeMode = ThemeMode.light;
-    } else if (theme == 'dark') {
-      _themeMode = ThemeMode.dark;
-    } else if (theme == 'light') {
-      _themeMode = ThemeMode.light;
-    } else {
-      _themeMode = ThemeMode.system;
+      theme = 'light';
+      prefs.setString('theme','light');
     }
+
+    currentColorScheme = themes[theme];
+
     notifyListeners();
   }
 
-  Future<void> setThemeMode(ThemeMode value) async {
-    _themeMode = value;
+  Future<void> setThemeMode(String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (value == ThemeMode.system) {
-      prefs.remove('theme');
-    } else {
-      prefs.setString('theme', value.toString().split('.').last);
-    }
+    prefs.setString('theme', value);
+    currentScheme = value;
+    currentColorScheme = themes[value];
 
     notifyListeners();
   }
 
-  Future<void> saveAmoled(bool value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("isAmoled", value);
-  }
-
-  ColorScheme get amoledScheme => _amoledScheme;
-  void toggleAmoled(bool enabled) {
-    amoledEnabled = enabled;
-    saveAmoled(enabled);
-    notifyListeners();
-  }
-
-  ColorScheme get darkScheme => _darkScheme;
-  void setDarkScheme(ColorScheme value) {
-    if (amoledEnabled) {
-      _darkScheme = amoledColourScheme;
-      notifyListeners();
-    } else {
-      _darkScheme = value;
-      notifyListeners();
-    }
-  }
-
-  ColorScheme get lightScheme => _lightScheme;
-  void setLightScheme(ColorScheme value) {
-    _lightScheme = value;
-    notifyListeners();
-  }
+  bool get isLightMode => lightThemes.contains(currentScheme);
+  bool get isDarkMode => darkThemes.contains(currentScheme);
 }

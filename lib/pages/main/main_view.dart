@@ -88,11 +88,7 @@ class _MainPageState extends State<MainPage> {
         statusBarBrightness: Brightness.dark, // makes icons light in iOS
       ),
       child: Container(
-        color: context.read<ThemeProvider>().isLightMode
-            ? Colors.red
-            : (context.read<ThemeProvider>().amoledEnabled
-                ? Colors.black
-                : Theme.of(context).colorScheme.surface),
+        color: context.read<ThemeProvider>().currentColorScheme?.surface,
         child: SafeArea(
           child: Scaffold(
             body: SliderDrawer(
@@ -129,11 +125,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  backgroundColor: context.read<ThemeProvider>().isLightMode
-                      ? Colors.red
-                      : (context.read<ThemeProvider>().amoledEnabled
-                          ? Colors.black
-                          : Theme.of(context).colorScheme.surface),
+                  backgroundColor: context.read<ThemeProvider>().currentColorScheme?.surface,
                   padding: const EdgeInsets.only(top: 4),
                   drawerIconColor: Colors.white,
                 ),

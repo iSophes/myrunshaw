@@ -508,11 +508,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           setState(() {
                             if (value) {
                               context.read<ThemeProvider>().setThemeMode(
-                                    ThemeMode.light,
+                                    "light",
                                   );
                             } else {
                               context.read<ThemeProvider>().setThemeMode(
-                                    ThemeMode.dark,
+                                    "dark",
                                   );
                             }
                           });
@@ -542,7 +542,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           value: context.read<ThemeProvider>().amoledEnabled,
                           onChanged: (bool value) {
                             setState(() {
-                              context.read<ThemeProvider>().toggleAmoled(value);
+                              context.read<ThemeProvider>().
                             });
                           },
                         ),
